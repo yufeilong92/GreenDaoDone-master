@@ -23,6 +23,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button mBtn3;
     private Button mBtn4;
     private Button mBtn5;
+    private Button mBtn6;
+    private Button mBtn7;
+    private Button mBtn8;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void initData() {
         DBHelper.initDb(this);
+        DBHelper.getDaoSession().getDownListDbDao().deleteAll();
 
     }
 
@@ -51,6 +55,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mBtn4.setOnClickListener(this);
         mBtn5 = (Button) findViewById(R.id.btn5);
         mBtn5.setOnClickListener(this);
+        mBtn6 = (Button) findViewById(R.id.btn6);
+        mBtn6.setOnClickListener(this);
+        mBtn7 = (Button) findViewById(R.id.btn7);
+        mBtn7.setOnClickListener(this);
+        mBtn8 = (Button) findViewById(R.id.btn8);
+        mBtn8.setOnClickListener(this);
     }
 
     int a = 0;
@@ -114,30 +124,68 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 }
                 break;
+
             case R.id.btn4:
                 DownListDbDao downListDbDao = DBHelper.getDaoSession().getDownListDbDao();
                 DownListDb downListDb = new DownListDb();
                 List<ListVo> data = new ArrayList<>();
-                int a = 20;
+                int a = 2;
                 for (int i = 0; i < a; i++) {
                     ListVo listVo = new ListVo();
                     listVo.setId("i==" + i);
                     listVo.setName("小米==" + i);
                     data.add(listVo);
                 }
+                downListDb.setOid("22");
                 downListDb.setData(data);
                 downListDbDao.insert(downListDb);
                 break;
             case R.id.btn5:
-                List<DownListDb> dbs = DBHelper.getDaoSession().getDownListDbDao().loadAll();
-                for (DownListDb db : dbs) {
-                    for (int i = 0; i < db.getData().size(); i++) {
-                        ListVo vo = db.getData().get(i);
-                        Log.d("yfl", "onClick: " + vo.getId() + "\n" + vo.getName());
-                    }
+                DownListDbDao dbDao = DBHelper.getDaoSession().getDownListDbDao();
+                List<DownListDb> list = dbDao.queryBuilder().where(DownListDbDao.Properties.Oid.eq("22")).list();
+                Log.e("========", "onClick: " + list.size());
+                for (int i = 0; i < list.size(); i++) {
+                    DownListDb downListDb1 = list.get(i);
+                    Log.e("yfl==========" + i, "onClick:\n " + downListDb1.getOid() + downListDb1);
+                    List<ListVo> data1 = downListDb1.getData();
+                    if (data1 != null && !data1.isEmpty())
+                        for (int j = 0; j < data1.size(); j++) {
+                            ListVo listVo = data1.get(j);
+                            Log.e("yfl", "onClick: " + listVo.getName() + "\n" + listVo.getId());
+
+                        }
                 }
 
+
+                break;
+            case R.id.btn6:
+                DBHelper.getDaoSession().getDownListDbDao().deleteAll();
+                break;
+            case R.id.btn7:
+                DownListDbDao dbDao1 = DBHelper.getDaoSession().getDownListDbDao();
+                List<DownListDb> list1 = dbDao1.queryBuilder().where(DownListDbDao.Properties.Oid.eq("22")).list();
+                DownListDb downListDb1 = list1.get(0);
+                List<ListVo> listVos = new ArrayList<>();
+                int v2 = 3;
+                for (int i = 0; i < v2; i++) {
+                    ListVo listVo = new ListVo();
+                    listVo.setName("龙龙");
+                    listVo.setId("" + i);
+                    listVos.add(listVo);
+                }
+                downListDb1.setData(null);
+                dbDao1.update(downListDb1);
+                break;
+            case R.id.btn8:
+                DownListDbDao dbDao2 = DBHelper.getDaoSession().getDownListDbDao();
+                List<DownListDb> list2 = dbDao2.queryBuilder().where(DownListDbDao.Properties.Oid.eq("22")).list();
+                for (int i = 0; i < list2.size(); i++) {
+                    DownListDb db = list2.get(i);
+                    if (i == 1)
+                        dbDao2.deleteByKey(db.getId());
+                }
                 break;
         }
+
     }
 }

@@ -26,6 +26,7 @@ public class DownListDbDao extends AbstractDao<DownListDb, Long> {
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property Data = new Property(1, String.class, "data", false, "DATA");
+        public final static Property Oid = new Property(2, String.class, "oid", false, "OID");
     }
 
     private final ListVoConverter dataConverter = new ListVoConverter();
@@ -43,7 +44,8 @@ public class DownListDbDao extends AbstractDao<DownListDb, Long> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"DOWN_LIST_DB\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
-                "\"DATA\" TEXT);"); // 1: data
+                "\"DATA\" TEXT," + // 1: data
+                "\"OID\" TEXT);"); // 2: oid
     }
 
     /** Drops the underlying database table. */
@@ -65,6 +67,11 @@ public class DownListDbDao extends AbstractDao<DownListDb, Long> {
         if (data != null) {
             stmt.bindString(2, dataConverter.convertToDatabaseValue(data));
         }
+ 
+        String oid = entity.getOid();
+        if (oid != null) {
+            stmt.bindString(3, oid);
+        }
     }
 
     @Override
@@ -80,6 +87,11 @@ public class DownListDbDao extends AbstractDao<DownListDb, Long> {
         if (data != null) {
             stmt.bindString(2, dataConverter.convertToDatabaseValue(data));
         }
+ 
+        String oid = entity.getOid();
+        if (oid != null) {
+            stmt.bindString(3, oid);
+        }
     }
 
     @Override
@@ -91,7 +103,8 @@ public class DownListDbDao extends AbstractDao<DownListDb, Long> {
     public DownListDb readEntity(Cursor cursor, int offset) {
         DownListDb entity = new DownListDb( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
-            cursor.isNull(offset + 1) ? null : dataConverter.convertToEntityProperty(cursor.getString(offset + 1)) // data
+            cursor.isNull(offset + 1) ? null : dataConverter.convertToEntityProperty(cursor.getString(offset + 1)), // data
+            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2) // oid
         );
         return entity;
     }
@@ -100,6 +113,7 @@ public class DownListDbDao extends AbstractDao<DownListDb, Long> {
     public void readEntity(Cursor cursor, DownListDb entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setData(cursor.isNull(offset + 1) ? null : dataConverter.convertToEntityProperty(cursor.getString(offset + 1)));
+        entity.setOid(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
      }
     
     @Override

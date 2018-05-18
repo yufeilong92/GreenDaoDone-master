@@ -38,6 +38,19 @@
         android:text="list_cha"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-
-
+ <Button
+     android:id="@+id/btn6"
+     android:text="list_delect"
+     android:layout_width="match_parent"
+     android:layout_height="wrap_content" />
+ <Button
+     android:id="@+id/btn7"
+     android:text="list_updata"
+     android:layout_width="match_parent"
+     android:layout_height="wrap_content" />
+ <Button
+     android:id="@+id/btn8"
+     android:text="删除其中一条数据"
+     android:layout_width="match_parent"
+     android:layout_height="wrap_content" />
 </LinearLayout>
